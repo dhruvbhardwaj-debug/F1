@@ -22,12 +22,12 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${oswald.className} ${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <body className={`${geistMono.className} ${geistSans.variable} ${geistMono.variable} antialiased`}>
           <ThemeProvider
-attribute="class" 
-  defaultTheme="dark" 
-  enableSystem 
-  storageKey="discord-theme"
+            attribute="class" 
+            defaultTheme="dark" 
+            enableSystem 
+            storageKey="discord-theme"
           >
             <ModalProvider />
             {children}
