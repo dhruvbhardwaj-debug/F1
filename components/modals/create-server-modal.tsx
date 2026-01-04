@@ -32,7 +32,6 @@ const formSchema = z.object({
 
 
 export const CreateServerModal = ()=>{
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {isOpen,onClose,type}=useModal();
     const router = useRouter();
  
