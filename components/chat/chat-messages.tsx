@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
- 
+"use client";
+
 import React, { Fragment, useRef, ElementRef } from "react";
 import { Member, Message, Profile } from "@prisma/client";
 import { Loader2, ServerCrash } from "lucide-react";
 import { format } from "date-fns";
 import { ChatWelcome } from "./chat-welcome";
 import { useChatQuery } from "@/hooks/use-chat-query";
-
-
+import { ChatItem } from "./chat-item";
 
 interface ChatMessagesProps {
   name: string;
@@ -30,7 +29,6 @@ type MessagesWithMemberWithProfile = Message & {
 
 const DATE_FORMAT = "d MMM yyyy, HH:mm";
 
-
 export function ChatMessages({
   name,
   member,
@@ -40,28 +38,25 @@ export function ChatMessages({
   socketQuery,
   paramKey,
   paramValue,
-  type
+  type,
 }: ChatMessagesProps) {
   const queryKey = `chat:${chatId}`;
-  
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    status
-  } = useChatQuery({
-    queryKey,
-    apiUrl,
-    paramKey,
-    paramValue
-  });
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
+    useChatQuery({
+      queryKey,
+      apiUrl,
+      paramKey,
+      paramValue,
+    });
 
   if (status === "pending") {
     return (
       <div className="flex flex-col flex-1 justify-center items-center">
         <Loader2 className="h-7 w-7 text-zinc-500 animate-spin my-4" />
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">Loading messages...</p>
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          Loading messages...
+        </p>
       </div>
     );
   }
@@ -70,7 +65,9 @@ export function ChatMessages({
     return (
       <div className="flex flex-col flex-1 justify-center items-center">
         <ServerCrash className="h-7 w-7 text-zinc-500 my-4" />
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">Something went wrong!</p>
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          Something went wrong!
+        </p>
       </div>
     );
   }
@@ -78,7 +75,6 @@ export function ChatMessages({
   return (
     // Single scrollable container
     <div className="flex-1 flex flex-col py-4 overflow-y-auto">
-      
       {/* 1. This spacer ensures that if there is very little content, 
             the welcome message stays at the bottom above the input bar. */}
       {!hasNextPage && <div className="flex-1" />}
@@ -91,10 +87,23 @@ export function ChatMessages({
         {data?.pages?.map((group, i) => (
           <Fragment key={i}>
             {group.items.map((message: MessagesWithMemberWithProfile) => (
-              <div key={message.id} className="flex flex-col p-4 text-zinc-200">
-                {/* For now, just showing content. We will add ChatItem later */}
-                {message.content}
-              </div>
+              // <div key={message.id} className="flex flex-col p-4 text-zinc-200">
+              //   {/* For now, just showing content. We will add ChatItem later */}
+              //   {message.content}
+              // </div>
+              <ChatItem
+                key={message.id}
+                id={message.id}
+                content={message.content}
+                member={message.member}
+                timestamp={format(new Date(message.createdAt),DATE_FORMAT)}
+                fileUrl={message.fileUrl}
+                deleted={false}
+                currentMember={member}
+                isUpdated={false}
+                socketUrl={socketUrl}
+                socketQuery={socketQuery}
+              />
             ))}
           </Fragment>
         ))}
