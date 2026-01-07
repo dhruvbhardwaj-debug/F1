@@ -1,12 +1,17 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import React, { Fragment, useRef, ElementRef } from "react";
+import React, { ComponentRef, Fragment, useEffect, useRef, useState } from "react";
 import { Member, Message, Profile } from "@prisma/client";
 import { Loader2, ServerCrash } from "lucide-react";
 import { format } from "date-fns";
-import { ChatWelcome } from "./chat-welcome";
+
 import { useChatQuery } from "@/hooks/use-chat-query";
+import { useChatSocket } from "@/hooks/use-chat-socket";
+import { useChatScroll } from "@/hooks/use-chat-scroll";
+
+import { ChatWelcome } from "./chat-welcome";
 import { ChatItem } from "./chat-item";
 
 interface ChatMessagesProps {
@@ -41,6 +46,18 @@ export function ChatMessages({
   type,
 }: ChatMessagesProps) {
   const queryKey = `chat:${chatId}`;
+  const addKey = `chat:${chatId}:messages`;
+  const updateKey = `chat:${chatId}:messages:update`;
+
+  // Use ComponentRef instead of ElementRef to avoid deprecation warnings
+  const chatRef = useRef<ComponentRef<"div">>(null);
+  const bottomRef = useRef<ComponentRef<"div">>(null);
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useChatQuery({
@@ -50,7 +67,20 @@ export function ChatMessages({
       paramValue,
     });
 
-  if (status === "pending") {
+  useChatSocket({ queryKey, addKey, updateKey });
+
+  // Type casting 'as' is used here because useChatScroll likely expects 
+  // RefObject<HTMLDivElement> without null, which matches ComponentRef<'div'>
+  useChatScroll({
+    chatRef: chatRef as React.RefObject<HTMLDivElement>,
+    bottomRef: bottomRef as React.RefObject<HTMLDivElement>,
+    loadMore: fetchNextPage,
+    shouldLoadMore: !isFetchingNextPage && !!hasNextPage,
+    count: data?.pages?.[0]?.items?.length ?? 0
+  });
+
+  // Hydration safety: ensure server and client match
+  if (!isMounted || status === "pending") {
     return (
       <div className="flex flex-col flex-1 justify-center items-center">
         <Loader2 className="h-7 w-7 text-zinc-500 animate-spin my-4" />
@@ -73,34 +103,39 @@ export function ChatMessages({
   }
 
   return (
-    // Single scrollable container
-    <div className="flex-1 flex flex-col py-4 overflow-y-auto">
-      {/* 1. This spacer ensures that if there is very little content, 
-            the welcome message stays at the bottom above the input bar. */}
+    <div ref={chatRef} className="flex-1 flex flex-col py-4 overflow-y-auto">
       {!hasNextPage && <div className="flex-1" />}
-
-      {/* 2. Welcome message - only shown when we've reached the start of the chat */}
       {!hasNextPage && <ChatWelcome name={name} type={type} />}
+      
+      {hasNextPage && (
+        <div className="flex justify-center">
+          {isFetchingNextPage ? (
+            <Loader2 className="h-6 w-6 text-zinc-500 animate-spin my-4" />
+          ) : (
+            <button
+              onClick={() => fetchNextPage()}
+              className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 text-xs my-4 dark:hover:text-zinc-300 transition"
+            >
+              Load previous messages
+            </button>
+          )}
+        </div>
+      )}
 
-      {/* 3. The Messages List */}
       <div className="flex flex-col-reverse mt-auto">
         {data?.pages?.map((group, i) => (
           <Fragment key={i}>
             {group.items.map((message: MessagesWithMemberWithProfile) => (
-              // <div key={message.id} className="flex flex-col p-4 text-zinc-200">
-              //   {/* For now, just showing content. We will add ChatItem later */}
-              //   {message.content}
-              // </div>
               <ChatItem
                 key={message.id}
                 id={message.id}
                 content={message.content}
                 member={message.member}
-                timestamp={format(new Date(message.createdAt),DATE_FORMAT)}
+                timestamp={format(new Date(message.createdAt), DATE_FORMAT)}
                 fileUrl={message.fileUrl}
-                deleted={false}
+                deleted={message.deleted}
                 currentMember={member}
-                isUpdated={false}
+                isUpdated={new Date(message.updatedAt).getTime() !== new Date(message.createdAt).getTime()}
                 socketUrl={socketUrl}
                 socketQuery={socketQuery}
               />
@@ -108,6 +143,7 @@ export function ChatMessages({
           </Fragment>
         ))}
       </div>
+      <div ref={bottomRef} />
     </div>
   );
 }

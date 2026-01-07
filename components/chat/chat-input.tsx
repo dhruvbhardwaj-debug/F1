@@ -1,11 +1,12 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Smile } from "lucide-react";
+import { Plus } from "lucide-react";
 import axios from "axios";
 import qs from "query-string";
 import { useRouter } from "next/navigation";
@@ -27,8 +28,13 @@ const formSchema = z.object({
 });
 
 export function ChatInput({ apiUrl, query, name, type }: ChatInputProps) {
+  const [isMounted, setIsMounted] = useState(false);
   const { onOpen } = useModal();
   const router = useRouter();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,6 +59,11 @@ export function ChatInput({ apiUrl, query, name, type }: ChatInputProps) {
     }
   };
 
+  // Prevent hydration mismatch by not rendering the form until mounted on client
+  if (!isMounted) {
+    return null;
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -63,7 +74,6 @@ export function ChatInput({ apiUrl, query, name, type }: ChatInputProps) {
             <FormItem>
               <FormControl>
                 <div className="relative p-4 pb-6">
-                  {/* Plus button for file uploads */}
                   <button
                     type="button"
                     onClick={() => onOpen("messageFile", { apiUrl, query })}
@@ -78,11 +88,10 @@ export function ChatInput({ apiUrl, query, name, type }: ChatInputProps) {
                     placeholder={`Message ${type === "conversation" ? name : "#" + name}`}
                     {...field}
                   />
-                  {/* Placeholder for Emoji Picker */}
                   <div className="absolute top-7 right-8">
-  
-                      <EmojiPicker onChange={(emoji: string)=>field.onChange(`${field.value} ${emoji}`) } />
-                    
+                      <EmojiPicker 
+                        onChange={(emoji: string) => field.onChange(`${field.value}${emoji}`)} 
+                      />
                   </div>
                 </div>
               </FormControl>

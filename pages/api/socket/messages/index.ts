@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextApiRequest } from "next";
 import { MemberRole } from "@prisma/client";
 

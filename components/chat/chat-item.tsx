@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/set-state-in-effect */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -225,7 +226,7 @@ export function ChatItem({
       </div>
       
       {canDeleteMessage && (
-        <div className="opacity-0 group-hover:opacity-100 flex items-center gap-x-2 absolute p-1 top-1 right-5 bg-white dark:bg-zinc-800 border rounded-sm shadow-sm transition z-[50]">
+        <div className="opacity-0 group-hover:opacity-100 flex items-center gap-x-2 absolute p-1 top-1 right-5 bg-white dark:bg-zinc-800 border rounded-sm shadow-sm transition z-50">
           {canEditMessage && (
             <ActionTooltip label="Edit">
               <Edit onClick={() => setIsEditing(true)} className="cursor-pointer w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition" />
