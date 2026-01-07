@@ -5,6 +5,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Oswald } from "next/font/google";
 import "./globals.css";
 import { ModalProvider } from '@/components/providers/modal-provider';
+import { SocketProvider } from '@/components/providers/socket-provider';
+import { QueryProvider } from '@/components/providers/query-provider';
 const oswald = Oswald({ subsets: ["latin"], weight: ["300"] });
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -29,8 +31,12 @@ export default function RootLayout({
             enableSystem 
             storageKey="discord-theme"
           >
-            <ModalProvider />
-            {children}
+            <SocketProvider>
+              <ModalProvider />
+              <QueryProvider>
+              {children}
+              </QueryProvider>
+            </SocketProvider>
           </ThemeProvider>
         </body>
       </html>
