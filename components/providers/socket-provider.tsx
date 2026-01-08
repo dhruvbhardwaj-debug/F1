@@ -37,7 +37,6 @@ export function SocketProvider({
       process.env.NEXT_PUBLIC_SITE_URL!,
       {
         path: "/api/socket/io",
-        addTrailingSlash: false
       }
     );
 

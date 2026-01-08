@@ -53,7 +53,8 @@ export function ChatInput({ apiUrl, query, name, type }: ChatInputProps) {
       await axios.post(url, values);
 
       form.reset();
-      router.refresh();
+      
+        router.refresh();
     } catch (error) {
       console.error(error);
     }

@@ -4,7 +4,6 @@ import { NextApiRequest } from "next";
 import { Server as ServerIO } from "socket.io";
 
 import { NextApiResponseServerIo } from "@/types";
-import { Any } from "effect/Schema";
 
 export const config = {
   api: {
@@ -18,8 +17,6 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIo) => {
     const httpServer: NetServer = res.socket.server as any;
     const io = new ServerIO(httpServer, {
       path,
-    //   @ts-ignore
-      addTrailingSlash: false
     });
     res.socket.server.io = io;
   }
