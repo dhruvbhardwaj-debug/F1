@@ -7,6 +7,7 @@ import "./globals.css";
 import { ModalProvider } from '@/components/providers/modal-provider';
 import { SocketProvider } from '@/components/providers/socket-provider';
 import { QueryProvider } from '@/components/providers/query-provider';
+
 const oswald = Oswald({ subsets: ["latin"], weight: ["300"] });
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -24,7 +25,8 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${geistMono.className} ${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {/* Added bg-zinc-600 to the body class list below */}
+        <body className={`${geistMono.className} ${geistSans.variable} ${geistMono.variable} bg-[#313338] antialiased`}>
           <ThemeProvider
             attribute="class" 
             defaultTheme="dark" 
@@ -34,7 +36,7 @@ export default function RootLayout({
             <SocketProvider>
               <ModalProvider />
               <QueryProvider>
-              {children}
+                {children}
               </QueryProvider>
             </SocketProvider>
           </ThemeProvider>
