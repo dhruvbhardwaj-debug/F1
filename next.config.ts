@@ -1,6 +1,3 @@
-import { webpack } from "next/dist/compiled/webpack/webpack";
-import { config } from "zod/v4/core";
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactCompiler: true,
