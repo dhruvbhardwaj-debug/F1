@@ -3,7 +3,7 @@
 
 import { UploadDropzone } from "@/lib/uploadthing";
 import { FileIcon, X } from "lucide-react";
-import "@uploadthing/react/styles.css";
+
 import Image from "next/image";
 import { useEffect, useState } from "react";
 

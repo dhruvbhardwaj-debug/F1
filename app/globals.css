@@ -136,3 +136,5 @@ body,
     overflow-x: hidden; 
   }
 }
+/* Use standard package resolution */
+@import "@uploadthing/react/styles.css";
