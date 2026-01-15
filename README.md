@@ -21,7 +21,7 @@ This project focuses on **design trade-offs, team coordination, and strategy**, 
 ## 🎨 Car Design System (Canvas-Based)
 
 * Static **top-view car representation**
-* No freehand drawing or 3D models
+* 3D models
 * Visual feedback reacts to slider changes
 * Design is represented internally as structured JSON
 
