@@ -1,12 +1,13 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react"; // Added useEffect/useState
 import { Code2, Github, Linkedin, Twitter, Cpu, Terminal, Zap, Coffee } from "lucide-react";
 import { 
   Dialog, 
   DialogContent, 
   DialogTrigger,
-  DialogTitle // 1. Added Import
+  DialogTitle 
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +16,28 @@ interface DeveloperButtonProps {
 }
 
 export const DeveloperButton = ({ mode = "default" }: DeveloperButtonProps) => {
+  // --- HYDRATION FIX ---
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    // Return a placeholder or the raw button without the Dialog wrapper
+    // to match the server-side initial HTML.
+    return (
+        <div className={cn(
+            "group relative flex items-center justify-center overflow-hidden transition-all duration-300",
+            mode === "sidebar" && "h-[48px] w-[48px] rounded-[24px] bg-zinc-800 text-emerald-500",
+            mode === "default" && "px-4 py-2 bg-zinc-900/50 border border-white/10 rounded-lg gap-2"
+          )}>
+            <Code2 size={mode === "sidebar" ? 24 : 16} />
+        </div>
+    );
+  }
+  // --- END HYDRATION FIX ---
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -42,7 +65,6 @@ export const DeveloperButton = ({ mode = "default" }: DeveloperButtonProps) => {
       </DialogTrigger>
 
       <DialogContent className="max-w-md bg-black/95 border-zinc-800 p-0 overflow-hidden shadow-[0_0_50px_rgba(16,185,129,0.15)] outline-none">
-        
         {/* Banner */}
         <div className="h-32 bg-[url('https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center relative">
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/60 to-black/95" />
@@ -61,7 +83,6 @@ export const DeveloperButton = ({ mode = "default" }: DeveloperButtonProps) => {
 
           <div className="mt-4 flex justify-between items-end">
             <div>
-              {/* 2. REPLACED h2 WITH DialogTitle */}
               <DialogTitle className="text-2xl font-black text-white italic tracking-tighter uppercase">
                 Dhruv Bhardwaj
               </DialogTitle>

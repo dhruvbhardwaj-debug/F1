@@ -16,7 +16,6 @@ interface Car {
   teamColor: string;
   speedBase: number;
   accel: number;
-  // braking: number; // Removed as requested (cars stay fast)
   
   // Physics State
   progress: number;      
@@ -33,32 +32,32 @@ interface Car {
 
 // --- GEOMETRY DATA ---
 const VEGAS_POINTS = [
-  { x: 650, y: 450, type: 'straight' }, // 0: Start/Finish (Checkerboard)
-  { x: 760, y: 450, type: 'corner' },   // 1
-  { x: 760, y: 550, type: 'corner' },   // 2
-  { x: 600, y: 550, type: 'corner' },   // 3
-  { x: 550, y: 480, type: 'straight' }, // 4
-  { x: 200, y: 480, type: 'straight' }, // 5
-  { x: 100, y: 430, type: 'corner' },   // 6
-  { x: 70, y: 350, type: 'corner' },    // 7
-  { x: 100, y: 280, type: 'corner' },   // 8
-  { x: 160, y: 250, type: 'corner' },   // 9
-  { x: 220, y: 280, type: 'corner' },   // 10
-  { x: 200, y: 150, type: 'straight' }, // 11
-  { x: 240, y: 100, type: 'corner' },   // 12
-  { x: 320, y: 120, type: 'corner' },   // 13
-  { x: 320, y: 200, type: 'straight' }, // 14
-  { x: 650, y: 200, type: 'straight' }, // 15
-  { x: 730, y: 240, type: 'corner' },   // 16
-  { x: 710, y: 330, type: 'corner' },   // 17
-  { x: 650, y: 380, type: 'corner' },   // 18
-  { x: 650, y: 450, type: 'straight' }, // 19
+  { x: 650, y: 450, type: 'straight' }, 
+  { x: 760, y: 450, type: 'corner' },   
+  { x: 760, y: 550, type: 'corner' },   
+  { x: 600, y: 550, type: 'corner' },   
+  { x: 550, y: 480, type: 'straight' }, 
+  { x: 200, y: 480, type: 'straight' }, 
+  { x: 100, y: 430, type: 'corner' },   
+  { x: 70, y: 350, type: 'corner' },    
+  { x: 100, y: 280, type: 'corner' },   
+  { x: 160, y: 250, type: 'corner' },   
+  { x: 220, y: 280, type: 'corner' },   
+  { x: 200, y: 150, type: 'straight' }, 
+  { x: 240, y: 100, type: 'corner' },   
+  { x: 320, y: 120, type: 'corner' },   
+  { x: 320, y: 200, type: 'straight' }, 
+  { x: 650, y: 200, type: 'straight' }, 
+  { x: 730, y: 240, type: 'corner' },   
+  { x: 710, y: 330, type: 'corner' },   
+  { x: 650, y: 380, type: 'corner' },   
+  { x: 650, y: 450, type: 'straight' }, 
 ];
 
 const PIT_LANE_POINTS = [
   { x: 640, y: 390, type: 'technical' }, 
   { x: 620, y: 410, type: 'straight' },  
-  { x: 620, y: 450, type: 'straight' },  // BOX
+  { x: 620, y: 450, type: 'straight' },  
   { x: 620, y: 480, type: 'straight' },  
   { x: 720, y: 480, type: 'technical' }, 
 ];
@@ -82,6 +81,8 @@ export const F1RealisticVegas = () => {
   const [commentary, setCommentary] = useState<string[]>(["SYSTEM: Waiting for grid formation..."]);
   const [leaderboard, setLeaderboard] = useState<Car[]>([...INITIAL_CARS]);
   
+  // Use a Ref to track current lap to avoid state dependency in loop
+  const currentLapRef = useRef(0);
   const cars = useRef<Car[]>(JSON.parse(JSON.stringify(INITIAL_CARS)));
 
   const requestRedBullPit = () => {
@@ -117,9 +118,12 @@ export const F1RealisticVegas = () => {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let animationId: number;
+    let frameCount = 0; // Local frame counter for throttling
 
     const loop = () => {
       if (!ctx) return;
+      
+      // Clear Canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // 1. DRAW PIT LANE
@@ -161,18 +165,15 @@ export const F1RealisticVegas = () => {
 
       // --- CHECKERBOARD START/FINISH LINE ---
       ctx.save();
-      ctx.translate(750, 450); // Location of Start Line
+      ctx.translate(750, 450); 
       const checkSize = 5;
-      const rows = 8; // Width of track (approx 40px)
-      const cols = 2; // Thickness of line
-      
-      // Rotate to match track angle (straight horizontal here)
+      const rows = 8; 
+      const cols = 2; 
       ctx.rotate(0); 
 
       for(let c=0; c<cols; c++) {
         for(let r=0; r<rows; r++) {
             ctx.fillStyle = (r + c) % 2 === 0 ? '#fff' : '#000';
-            // Centering the grid on the track point
             ctx.fillRect(c * checkSize - 5, (r * checkSize) - 20, checkSize, checkSize);
         }
       }
@@ -181,7 +182,7 @@ export const F1RealisticVegas = () => {
       // 3. PHYSICS
       if (raceState === 'racing') {
         cars.current.forEach((car) => {
-          
+          // ... (Pit entry logic same as before)
           if (car.boxRequest && !car.isPitting && car.currentPath === 'main') {
             if (car.progress > 0.90 && car.progress < 0.98) {
               car.currentPath = 'pit';
@@ -192,6 +193,7 @@ export const F1RealisticVegas = () => {
             }
           }
 
+          // ... (Pit phase logic same as before)
           if (car.currentPath === 'pit') {
             const pitLen = PIT_LANE_POINTS.length;
             if (car.pitPhase === 'entry') {
@@ -227,24 +229,25 @@ export const F1RealisticVegas = () => {
             }
 
           } else {
-            // MAIN TRACK PHYSICS (High Speed Cornering Updated)
-            
+            // MAIN TRACK PHYSICS
             const noise = Math.sin(Date.now() * 0.001 + car.id) * 0.1;
-            
-            // LOGIC CHANGE: Cars are now nearly equally fast at corners
-            // We multiply by 0.95 instead of 0.45 to keep speed high
             const targetSpeed = car.speedBase + noise; 
 
-            // Acceleration
             car.currentSpeed += (targetSpeed - car.currentSpeed) * car.accel;
-
-            // Move Car
             car.progress += (car.currentSpeed * 0.00015);
 
             if (car.progress >= 1) {
               car.progress = 0;
               car.lapsCompleted += 1;
-              if (car.id === 1) setCurrentLap(car.lapsCompleted);
+              if (car.id === 1) {
+                 // Update Ref immediately
+                 currentLapRef.current = car.lapsCompleted;
+                 // Update State only if changed (prevents flicker)
+                 setCurrentLap(prev => {
+                    if (prev !== car.lapsCompleted) return car.lapsCompleted;
+                    return prev;
+                 });
+              }
               if (car.lapsCompleted >= TOTAL_LAPS) setRaceState('finished');
             }
           }
@@ -252,6 +255,7 @@ export const F1RealisticVegas = () => {
           const activePath = car.currentPath === 'pit' ? PIT_LANE_POINTS : VEGAS_POINTS;
           const coords = getPositionOnPath(car.progress, activePath, car.id, car.isPitting);
 
+          // DRAW CAR
           ctx.save();
           ctx.translate(coords.x, coords.y);
           
@@ -281,11 +285,17 @@ export const F1RealisticVegas = () => {
           ctx.restore();
         });
 
-        const sorted = [...cars.current].sort((a, b) => {
-            if (b.lapsCompleted !== a.lapsCompleted) return b.lapsCompleted - a.lapsCompleted;
-            return b.progress - a.progress;
-        });
-        setLeaderboard(sorted);
+        // --- PERFORMANCE FIX: THROTTLE STATE UPDATES ---
+        // Only update the leaderboard React state every 15 frames (approx 4 times a second)
+        // Updating this every frame (60fps) kills React performance.
+        frameCount++;
+        if (frameCount % 15 === 0) {
+            const sorted = [...cars.current].sort((a, b) => {
+                if (b.lapsCompleted !== a.lapsCompleted) return b.lapsCompleted - a.lapsCompleted;
+                return b.progress - a.progress;
+            });
+            setLeaderboard(sorted);
+        }
       }
 
       animationId = requestAnimationFrame(loop);
@@ -293,8 +303,9 @@ export const F1RealisticVegas = () => {
 
     loop();
     return () => cancelAnimationFrame(animationId);
-  }, [raceState]);
+  }, [raceState]); // Dependency on raceState ensures loop restarts when state changes
 
+  // Countdown Logic
   useEffect(() => {
     if (raceState === 'countdown') {
       let step = 0;
