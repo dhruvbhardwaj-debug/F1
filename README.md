@@ -1,4 +1,4 @@
-# 🏎️ Team-Based Car Design & Race Simulation Platform
+# 🏎️ Team-Based Car Design & Race Collaborative Platform
 
 A real-time, team-driven car design and race simulation platform built on a **Discord-like architecture** using **Next.js**, **LiveKit**, and a **canvas-based design system**.
 
