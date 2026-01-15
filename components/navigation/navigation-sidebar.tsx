@@ -7,6 +7,9 @@ import { NavigationItem } from "./navigation-item";
 import { ModeToggle } from "../ui/themeModes";
 import { UserButton } from "@clerk/nextjs";
 import { CarDesign } from "./carDesign";
+import { Race } from "./finalRace";
+import { DeveloperButton } from "../DeveloperButton";
+
 
 export const NavigationSidebar = async () => {
   const profile = await currentProfile();
@@ -54,6 +57,7 @@ export const NavigationSidebar = async () => {
       <div className="relative z-10 flex flex-col items-center h-full w-full space-y-4">
         <NavigationAction />
         <CarDesign/>
+        <Race/>
         
         {/* <Separator className="h-[2px] bg-red-600/50 rounded-full w-10 mx-auto" /> */}
         
@@ -69,10 +73,11 @@ export const NavigationSidebar = async () => {
           ))}
         </ScrollArea>
 
-        <div className="pb-4 mt-auto flex items-center flex-col gap-y-6">
+        <div className="pb-4 mt-auto flex items-center flex-col gap-y-2">
           <div className="hover:scale-110 transition-transform">
             <ModeToggle />
           </div>
+          <DeveloperButton mode="sidebar" />
           
           <div className="relative group">
             <div className="absolute -inset-1 bg-red-600/30 rounded-full blur-[6px] opacity-0 group-hover:opacity-100 transition duration-500" />

@@ -36,7 +36,7 @@ export const NavigationItem = ({ id, imageUrl, name }: NavigationItemProps) => {
                     "border-2 border-transparent",
                     // Shape: Circular for inactive, Squircle for active/hover
                     isActive 
-                        ? "rounded-[12px] border-red-600 shadow-[0_0_15px_rgba(220,38,38,0.3)] scale-110" 
+                        ? "rounded-[12px] border-red-600 shadow-[0_0_15px_rgba(220,38,38,0.3)]" 
                         : "rounded-[24px] group-hover:rounded-[12px] bg-[#18181b] group-hover:border-zinc-700"
                 )}>
                     {/* Dark overlay for inactive servers */}
@@ -50,7 +50,7 @@ export const NavigationItem = ({ id, imageUrl, name }: NavigationItemProps) => {
                         alt={name}
                         className={cn(
                             "object-cover transition-transform duration-500",
-                            isActive ? "scale-100" : "scale-110 group-hover:scale-100 grayscale-[0.5] group-hover:grayscale-0"
+                            isActive ? "scale-100" : "group-hover:scale-100 grayscale-[0.5] group-hover:grayscale-0"
                         )}
                     />
                 </div>

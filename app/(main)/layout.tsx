@@ -9,7 +9,7 @@ const MainLayout = async ({
       <div className="md:flex h-full w-[72px] z-30 flex-col fixed inset-y-0">
         <NavigationSidebar />
       </div>
-      <main className="md:pl-[72px] flex-1 h-full overflow-y-auto">
+      <main className="md:pl-[72px] flex-1 h-full">
         {children}
       </main>
     </div>

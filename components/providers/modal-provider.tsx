@@ -14,6 +14,7 @@ import { DeleteChannelModal } from "../modals/delete-channel-modal";
 import { MessageFileModal } from "../modals/message-file-modal";
 import { DeleteMessageModal } from "../modals/delete-message-modal";
 import { CarDesignModal } from "../modals/car-design/car-design-modal";
+import { RaceSimulationModal } from "@/components/modals/race/Simulator";
 
 export const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -41,6 +42,7 @@ export const ModalProvider = () => {
       <MessageFileModal />
       <DeleteMessageModal/> 
       <CarDesignModal />
+      <RaceSimulationModal/>
     </>
   );
 };
