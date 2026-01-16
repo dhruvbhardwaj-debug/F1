@@ -343,7 +343,7 @@ export const F1RealisticVegas = () => {
           </div>
 
           <div className="flex gap-4">
-            <button 
+            {/* <button 
               onClick={requestRedBullPit}
               disabled={cars.current[0].boxRequest || cars.current[0].isPitting}
               className={`flex items-center gap-2 px-6 py-2 rounded-lg font-black italic transition-all shadow-lg text-sm
@@ -353,7 +353,7 @@ export const F1RealisticVegas = () => {
             >
               <Wrench size={14} />
               {cars.current[0].isPitting ? "IN PITS" : cars.current[0].boxRequest ? "BOX CONFIRMED" : "BOX VERSTAPPEN"}
-            </button>
+            </button> */}
           </div>
         </div>
 

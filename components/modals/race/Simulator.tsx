@@ -20,11 +20,11 @@ export const RaceSimulationModal = () => {
           <div className="flex items-center justify-between pr-8">
             <DialogTitle className="text-white text-2xl font-black tracking-tighter uppercase italic flex items-center gap-3">
               <div className="w-2 h-8 bg-red-600 italic -skew-x-12" />
-              Live Grand Prix Telemetry
+              Replay Last Grand Prix Telemetry
             </DialogTitle>
             <div className="flex items-center gap-4">
               <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest border border-zinc-800 px-3 py-1 rounded bg-zinc-900/50">
-                System: <span className="text-emerald-500 font-bold animate-pulse">Live_Link_Active</span>
+                System: <span className="text-emerald-500 font-bold animate-pulse">once have enough users we will conduct another race soon</span>
               </div>
             </div>
           </div>
