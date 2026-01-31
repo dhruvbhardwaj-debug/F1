@@ -1,10 +1,12 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  output: 'standalone',
+  typescript:{
+    ignoreBuildErrors:true
   },
-  reactCompiler: true,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -12,15 +14,15 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "ufs.sh",
+        hostname: "*.ufs.sh",
       },
       {
         protocol: "https",
-        hostname: "uploadthing.com",
+        hostname: "img.clerk.com",
       },
       {
         protocol: "https",
-        hostname: "**.ufs.sh", // Matches your specific subdomain ykuzzix508.ufs.sh
+        hostname: "images.clerk.dev",
       },
     ],
   },

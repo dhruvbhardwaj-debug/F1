@@ -37,7 +37,7 @@ function VideoComponent() {
 export function MediaRoom({ chatId, video, audio }: MediaRoomProps) {
   const { user } = useUser();
   const [token, setToken] = useState("");
-
+  const serverUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL;
   useEffect(() => {
     if (!user?.firstName) return;
 
@@ -63,7 +63,16 @@ export function MediaRoom({ chatId, video, audio }: MediaRoomProps) {
         </p>
       </div>
     );
-
+  if (token === "" || !serverUrl){
+    return (
+      <div className="flex flex-col flex-1 justify-center items-center">
+        <Loader2 className="h-7 w-7 text-zinc-500 animate-spin my-4" />
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          {!serverUrl ? "Configuration Error: LiveKit URL missing" : "Loading..."}
+        </p>
+      </div>
+    );
+  }
   return (
     <LiveKitRoom
       video={video}
