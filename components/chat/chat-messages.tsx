@@ -3,7 +3,7 @@
 
 import React, { ComponentRef, Fragment, useEffect, useRef, useState } from "react";
 import { Member, Message, Profile } from "@prisma/client";
-import { Loader2, ServerCrash, Activity, Wifi, History } from "lucide-react";
+import { Loader2, ServerCrash, Wifi, History } from "lucide-react";
 import { format } from "date-fns";
 
 import { useChatQuery } from "@/hooks/use-chat-query";
@@ -160,7 +160,7 @@ export function ChatMessages({
           </Fragment>
         ))}
       </div>
-      <div ref={bottomRef} className="h-[1px]" />
+      <div ref={bottomRef} className="h-px" />
     </div>
   );
 }
